@@ -33,7 +33,6 @@ altoDriveGear = 13.2;
 diametroRodamiento = 10;    ejeRodamiento = 3;  grosorRodamiento = 4;   //623
 //diametroRodamiento = 13;    ejeRodamiento = 4;  grosorRodamiento = 5;   //624
 //diametroRodamiento = 16;    ejeRodamiento = 5;  grosorRodamiento = 5;   //625
-//diametroRodamiento = 22;    ejeRodamiento = 8;  grosorRodamiento = 8;   //608
 
 //Muelle Tensor
 largoMaxMuelle = 16.5;
@@ -75,8 +74,9 @@ difference() {
     cuerpo_extrusor();
     hueco_brazo_tensor();
 }
+sujecion_hotend();
 
-*translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,0]) {
+translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,0]) {
     rodamiento();
 }
 
@@ -460,68 +460,124 @@ module nema_17() {
 
 module cuerpo_extrusor() {
     
-    difference() {
     
-        if (ptfe == "si") {
-            difference() {
-                
+        difference() {
+        
+            if (ptfe == "si") {
                 difference() {
-                    cube([largoMotor, largoMotor, grosor], center=true);
-                    taladros_motor();
-                }
-                
-                translate([diametroDriveGear/2,0,0]) {
-                    rotate([90,0,0]) {
-                        if(diametroFilamento==1.75) {
-                            cylinder(d=4, h=largoMotor+2, center=true, $fn=definicion);
+                    
+                    difference() {
+                        
+                        union() {
+                            cube([largoMotor, largoMotor, grosor], center=true);
+                            
+
+
                         }
-                        else if (diametroFilamento==3) {
-                            cylinder(d=6, h=largoMotor+2, center=true, $fn=definicion);
-                        }
+                        
+                        
+                        taladros_motor();
                     }
-                }
-            }
-            
-            translate([diametroDriveGear/2,0,0]) {
-                rotate([90,0,0]) {
-                    color("white") {    
-                        if(diametroFilamento==1.75) {
-                            difference() {
-                                cylinder(d=4, h=largoMotor+1, center=true, $fn=definicion);
-                                cylinder(d=2, h=largoMotor+2, center=true, $fn=definicion);
-                            }
-                        }
-                        else if (diametroFilamento==3) {
-                            difference() {
-                                cylinder(d=6, h=largoMotor+1, center=true, $fn=definicion);
+                    
+                    
+                    translate([diametroDriveGear/2,0,0]) {
+                        rotate([90,0,0]) {
+                            if(diametroFilamento==1.75) {
                                 cylinder(d=4, h=largoMotor+2, center=true, $fn=definicion);
                             }
+                            else if (diametroFilamento==3) {
+                                cylinder(d=6, h=largoMotor+2, center=true, $fn=definicion);
+                            }
                         }
                     }
                 }
-            }
-            
-            
-        }
-        else if (ptfe == "no") {
-            
-            difference() {
-            cube([largoMotor, largoMotor, grosor], center=true);
+                
                 translate([diametroDriveGear/2,0,0]) {
                     rotate([90,0,0]) {
-                        cylinder(d=diametroFilamento, h=largoMotor+2, center=true, $fn=definicion);
+                        color("white") {    
+                            if(diametroFilamento==1.75) {
+                                difference() {
+                                    cylinder(d=4, h=largoMotor+2, center=true, $fn=definicion);
+                                    cylinder(d=2, h=largoMotor+4, center=true, $fn=definicion);
+                                }
+                            }
+                            else if (diametroFilamento==3) {
+                                difference() {
+                                    cylinder(d=6, h=largoMotor+1, center=true, $fn=definicion);
+                                    cylinder(d=4, h=largoMotor+2, center=true, $fn=definicion);
+                                }
+                            }
+                        }
                     }
                 }
+                
+                
+            }
+            else if (ptfe == "no") {
+                
+                difference() {
+                cube([largoMotor, largoMotor, grosor], center=true);
+                    translate([diametroDriveGear/2,0,0]) {
+                        rotate([90,0,0]) {
+                            cylinder(d=diametroFilamento, h=largoMotor+2, center=true, $fn=definicion);
+                        }
+                    }
+                }
+                
+            }
+            
+            
+            color("grey") {
+                cylinder(d=diametroDriveGear+margen, h=grosor*3, center=true, $fn=definicion);
             }
             
         }
         
         
-        color("grey") {
-            cylinder(d=diametroDriveGear+margen, h=grosor*3, center=true, $fn=definicion);
+        
+        
+        
+        
+    difference() {
+        
+        difference() {
+
+            difference() {
+                difference() {
+
+                    translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                        cube([largoMotor/1.5, (longitudPreEndiduraHotend*2)-1+longitudEndiduraHotend, grosor], center=true);
+                    }
+                    translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,grosor/2]) {
+                        cube([(largoMotor/1.5)+1, (longitudPreEndiduraHotend*2)+longitudEndiduraHotend, grosor], center=true);
+                    }
+
+
+                }
+                translate([(diametroDriveGear/2)-(((largoMotor/1.5)/2)-diametroTaladroMotor*1.2), -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                    cylinder(d=diametroTaladroMotor, h = grosor+2, center=true, $fn=definicion);
+                }
+            }
+
+
+            translate([((diametroDriveGear/2)+(((largoMotor/1.5)/2)-diametroTaladroMotor*1.2)), -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                cylinder(d=diametroTaladroMotor, h = grosor+2, center=true, $fn=definicion);
+            }
+
+
+        }
+            
+            
+        difference() {
+            
+            translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                rotate([90,0,0]) { fusor(); }
+            }
+        
         }
         
-    }    
+    }
+    
 }
 //Cuerpo Extrusor
 //
@@ -594,4 +650,63 @@ module muelle_tensor() {
 }
 
 //Muelle Tensor
+//
+
+//
+//Sujecion Hotend
+
+module sujecion_hotend() {
+    
+    
+    difference() {
+        difference() {
+
+            difference() {
+                difference() {
+
+                    translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                        cube([largoMotor/1.5, (longitudPreEndiduraHotend*2)-1+longitudEndiduraHotend, grosor], center=true);
+                    }
+                    translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,-grosor/2]) {
+                        cube([(largoMotor/1.5)+1, (longitudPreEndiduraHotend*2)+longitudEndiduraHotend, grosor], center=true);
+                    }
+
+
+                }
+                translate([(diametroDriveGear/2)-(((largoMotor/1.5)/2)-diametroTaladroMotor*1.2), -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                    cylinder(d=diametroTaladroMotor, h = grosor+2, center=true, $fn=definicion);
+                }
+            }
+
+
+            translate([((diametroDriveGear/2)+(((largoMotor/1.5)/2)-diametroTaladroMotor*1.2)), -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                cylinder(d=diametroTaladroMotor, h = grosor+2, center=true, $fn=definicion);
+            }
+
+
+        }
+        
+        
+
+
+
+        difference() {
+                
+            translate([diametroDriveGear/2, -(((longitudPreEndiduraHotend*2)+longitudEndiduraHotend)/2)-(largoMotor/2)+1,0]) {
+                rotate([90,0,0]) { fusor(); }
+            }
+        
+        }
+    
+    }
+
+
+    
+    
+    
+    
+    
+}
+
+//Sujecion Hotend
 //
