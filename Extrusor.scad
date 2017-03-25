@@ -4,7 +4,7 @@
 
 //Filamento
 diametroFilamento = 1.75;
-ptfe = "si";
+ptfe = "no";
 
 //Hotend
 diametroHotend = 16;
@@ -46,15 +46,6 @@ definicion = 100;
 redondeo = 3;
 margen = 2;
 grosor=diametroHotend+6;
-
-
-// ---
-
-//posicionRodamiento=[(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2), 0,0];
-//posicionEjeTensor=[separacionTornillos/2,separacionTornillos/2, 0];
-
-// ---
-
 
 //to_preview();
 to_print();
@@ -571,7 +562,13 @@ module cuerpo_extrusor() {
                             else if (ptfe == "no") {
                                 
                                 difference() {
-                                cube([largoMotor, largoMotor, grosor], center=true);
+                                    
+                                    difference() {
+                                        
+                                        cube([largoMotor, largoMotor, grosor], center=true);
+                                        taladros_motor();
+                                    }
+                                    
                                     translate([diametroDriveGear/2,0,0]) {
                                         rotate([90,0,0]) {
                                             cylinder(d=diametroFilamento+0.25, h=largoMotor+2, center=true, $fn=definicion);
@@ -800,7 +797,10 @@ module to_print() {
             brazo_tensor();
             
             translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,0]) {
-                cylinder(d=diametroRodamiento-1, h=grosorRodamiento+1.5, center=true, $fn=definicion);
+                difference() {
+                    cylinder(d=diametroRodamiento-1, h=grosorRodamiento+1.5, center=true, $fn=definicion);
+                    cylinder(d=ejeRodamiento, h=grosorRodamiento+2, center=true, $fn=definicion);
+                }
             }
         }
     }
@@ -822,25 +822,39 @@ module to_print() {
 
 module to_preview() {
     
-    filamento();
-
+    //Filamento (Color Naranja)
+    color("Orange") {
+        filamento();
+    }
+    
+    //Drive Gear (Gris)
     translate([0,0,(altoDriveGear/2)-1.7]) {
         rotate([0,180,0]) {
             drive_gear();
         }
     }
 
-    cuerpo_extrusor();
-
-    sujecion_hotend();
-
-
+    //Cuerpo del Extrusor (Verde)
+    color("green") {
+        cuerpo_extrusor();
+    }
+    
+    //Sujecion del Fusor (Azul)
+    color("blue") {
+        sujecion_hotend();
+    }
+    
+    //Rodamiento (Gris)
     translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,0]) {
         rodamiento();
     }
-
-    brazo_tensor();
-
+    
+    //Brazo Tensor (Morado)
+    color("purple") {
+        brazo_tensor();
+    }
+    
+    //Muelle Tensor (Gris)
     translate([(separacionTornillos/2)+(diametroTaladroMotor)+(largoMaxMuelle/2), 0, 0]) {
         muelle_tensor();
     }
