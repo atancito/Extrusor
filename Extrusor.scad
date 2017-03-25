@@ -56,9 +56,9 @@ grosor=diametroHotend+6;
 // ---
 
 *taladros_motor();
-*filamento();
+filamento();
 
-*translate([0,0,(altoDriveGear/2)-1.7]) {
+translate([0,0,(altoDriveGear/2)-1.7]) {
     rotate([0,180,0]) {
         drive_gear();
     }
@@ -72,7 +72,7 @@ grosor=diametroHotend+6;
 
 cuerpo_extrusor();
 
-*sujecion_hotend();
+sujecion_hotend();
 
 
 translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,0]) {
@@ -81,7 +81,7 @@ translate([(diametroDriveGear/2)+(diametroRodamiento/2)+(diametroFilamento/2),0,
 
 brazo_tensor();
 
-*translate([(largoMaxMuelle/2)+(  (largoMotor/2)-(largoMotor-separacionTornillos)/2  )/2, largoMotor, 0]) {
+translate([(separacionTornillos/2)+(diametroTaladroMotor)+(largoMaxMuelle/2), 0, 0]) {
     muelle_tensor();
 }
 
@@ -461,7 +461,7 @@ module nema_17() {
         translate([-25,0,0]) {
             rotate([0,90,0]) {
                 color("grey") {
-                    cylinder(d=5, h=25, $fn=definicion, center=true);
+                    cylinder(d=5, h=40, $fn=definicion, center=true);
                 }
             }
         }
